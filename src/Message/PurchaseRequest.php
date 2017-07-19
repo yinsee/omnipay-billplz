@@ -28,7 +28,7 @@ class PurchaseRequest extends AbstractRequest
         $data['description'] = $this->getParameter('description');
         $data['email'] = $this->getParameter('email');
         $data['name'] = $this->getParameter('name');
-        $data['amount'] = $this->getParameter('amount');
+        $data['amount'] = intval($this->getParameter('amount')*100);
         $data['callback_url'] = $this->getParameter('notifyUrl');
 
         return $data;
