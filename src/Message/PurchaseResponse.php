@@ -9,22 +9,24 @@ use Omnipay\Common\Message\RedirectResponseInterface;
 /**
  * Stripe Response
  */
-class Response extends AbstractResponse implements RedirectResponseInterface
+class PurchaseResponse extends AbstractResponse implements RedirectResponseInterface
 {
-  /**
-   * endpoint is the remote url - should be provided by the processor.
-   * we are using github as a filler
-   *
-   * @var string
-   */
-    public $endpoint = 'https://github.com';
+  // /**
+  //  * endpoint is the remote url - should be provided by the processor.
+  //  * we are using github as a filler
+  //  *
+  //  * @var string
+  //  */
+  //   public $endpoint = 'https://github.com';
+  //
+  //
+  protected $statusCode;
 
-
-    public function __construct(RequestInterface $request, $data)
-    {
-        $this->request = $request;
-        $this->data = $data;
-    }
+  public function __construct($request, $data, $statusCode = 200)
+  {
+      parent::__construct($request, $data);
+      $this->statusCode = $statusCode;
+  }
 
     /**
      * Has the call to the processor succeeded?
@@ -60,7 +62,7 @@ class Response extends AbstractResponse implements RedirectResponseInterface
 
     public function getRedirectUrl()
     {
-        return $this->endpoint .'?' . http_build_query($this->data);
+        return $this->data['url'];
     }
 
     /**

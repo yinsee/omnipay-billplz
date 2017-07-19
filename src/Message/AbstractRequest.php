@@ -9,53 +9,135 @@ use Omnipay\Common\Exception\InvalidRequestException;
  */
 abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 {
-    public function getData()
+    private $liveEndpoint = "www.billplz.com/api/v3/";
+    private $testEndpoint = "billplz-staging.herokuapp.com/api/v3/";
+
+    private function getEndpoint()
     {
-        foreach ($this->getRequiredCoreFields() as $field) {
-            $this->validate($field);
-        }
-        $this->validateCardFields();
-        return $this->getBaseData() + $this->getTransactionData();
+        $base = 'https://'.$this->getAPIKey().':@'.($this->getTestMode() ? $this->testEndpoint : $this->liveEndpoint) . $this->getAPI();
+        return $base;
     }
 
-    public function validateCardFields()
+    public function sendData($data)
     {
-        $card = $this->getCard();
-        foreach ($this->getRequiredCardFields() as $field) {
-            $fn = 'get' . ucfirst($field);
-            $result = $card->$fn();
-            if (empty($result)) {
-                throw new InvalidRequestException("The $field parameter is required");
+        // don't throw exceptions for 4xx errors
+        $this->httpClient->getEventDispatcher()->addListener(
+            'request.error',
+            function ($event) {
+                if ($event['response']->isClientError()) {
+                    $event->stopPropagation();
+                }
             }
+        );
+
+        // Guzzle HTTP Client createRequest does funny things when a GET request
+        // has attached data, so don't send the data if the method is GET.
+        if ($this->getHttpMethod() == 'GET') {
+            $httpRequest = $this->httpClient->createRequest(
+                $this->getHttpMethod(),
+                $this->getEndpoint() . '?' . http_build_query($data),
+                array(
+                    'Accept' => 'application/json',
+                    'Authorization' => 'Basic ' . $this->getToken(),
+                    'Content-type' => 'application/json',
+                )
+            );
+        } else {
+            $httpRequest = $this->httpClient->createRequest(
+                $this->getHttpMethod(),
+                $this->getEndpoint(),
+                array(
+                    'Accept' => 'application/json',
+                    'Authorization' => 'Basic ' . $this->getToken(),
+                    'Content-type' => 'application/json',
+                ),
+                $this->toJSON($data)
+            );
+        }
+
+        // Might be useful to have some debug code here, PayPal especially can be
+        // a bit fussy about data formats and ordering.  Perhaps hook to whatever
+        // logging engine is being used.
+        // echo "Data == " . json_encode($data) . "\n";
+
+        try {
+            $httpRequest->getCurlOptions()->set(CURLOPT_SSLVERSION, 6); // CURL_SSLVERSION_TLSv1_2 for libcurl < 7.35
+            $httpResponse = $httpRequest->send();
+            // Empty response body should be parsed also as and empty array
+            $body = $httpResponse->getBody(true);
+            $jsonToArrayResponse = !empty($body) ? $httpResponse->json() : array();
+            return $this->response = $this->createResponse($jsonToArrayResponse, $httpResponse->getStatusCode());
+        } catch (\Exception $e) {
+            throw new InvalidResponseException(
+                'Error communicating with payment gateway: ' . $e->getMessage(),
+                $e->getCode()
+            );
         }
     }
 
-    public function getUsername()
+    public function toJSON($data, $options = 0)
     {
-        return $this->getParameter('username');
+        // Because of PHP Version 5.3, we cannot use JSON_UNESCAPED_SLASHES option
+        // Instead we would use the str_replace command for now.
+        // TODO: Replace this code with return json_encode($this->toArray(), $options | 64); once we support PHP >= 5.4
+        if (version_compare(phpversion(), '5.4.0', '>=') === true) {
+            return json_encode($data, $options | 64);
+        }
+        return str_replace('\\/', '/', json_encode($data, $options));
     }
 
-    public function setUsername($value)
-    {
-        return $this->setParameter('username', $value);
+    public function getToken() {
+        return base64_encode($this->getAPIKey().":");
     }
-    public function getPassword()
+    // essenstial parameters
+    public function getName()
     {
-        return $this->getParameter('password');
-    }
-
-    public function setPassword($value)
-    {
-        return $this->setParameter('password', $value);
+        return $this->getParameter('name');
     }
 
-    public function getTransactionType()
+    public function setName($value)
     {
-        return $this->getParameter('transactionType');
+        return $this->setParameter('name', $value);
     }
 
-    public function setTransactionType($value)
+    public function getEmail()
     {
-        return $this->setParameter('transactionType', $value);
+        return $this->getParameter('email');
     }
+
+    public function setEmail($value)
+    {
+        return $this->setParameter('email', $value);
+    }
+
+    public function getCollectionId()
+    {
+        return $this->getParameter('collectionId');
+    }
+
+    public function setCollectionId($value)
+    {
+        return $this->setParameter('collectionId', $value);
+    }
+
+    public function getAPIKey()
+    {
+        return $this->getParameter('apikey');
+    }
+
+    public function setAPIKey($value)
+    {
+        return $this->setParameter('apikey', $value);
+    }
+
+    public function getId()
+    {
+        return $this->getParameter('id');
+    }
+
+    public function setId($value)
+    {
+        return $this->setParameter('id', $value);
+    }
+
 }

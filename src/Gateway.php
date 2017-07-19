@@ -27,6 +27,7 @@ class Gateway extends AbstractGateway
     {
         return array(
             'apikey' => '',
+            'collectionId' => '',
             'testMode' => false,
         );
     }
@@ -36,20 +37,20 @@ class Gateway extends AbstractGateway
      * @param array $parameters
      * @return \Omnipay\Billplz\Message\AuthorizeRequest
      */
-    public function authorize(array $parameters = array())
-    {
-        return $this->createRequest('\Omnipay\Billplz\Message\AuthorizeRequest', $parameters);
-    }
+    // public function authorize(array $parameters = array())
+    // {
+    //     return $this->createRequest('\Omnipay\Billplz\Message\AuthorizeRequest', $parameters);
+    // }
 
     /**
      *
      * @param array $parameters
      * @return \Omnipay\Billplz\Message\CaptureRequest
      */
-    public function capture(array $parameters = array())
-    {
-        return $this->createRequest('\Omnipay\Billplz\Message\CaptureRequest', $parameters);
-    }
+    // public function capture(array $parameters = array())
+    // {
+    //     return $this->createRequest('\Omnipay\Billplz\Message\CaptureRequest', $parameters);
+    // }
 
     /**
      *
@@ -75,9 +76,18 @@ class Gateway extends AbstractGateway
      * @param array $parameters
      * @return \Omnipay\Billplz\Message\CompleteAuthorizeRequest
      */
-    public function completeAuthorize(array $parameters = array())
+    // public function completeAuthorize(array $parameters = array())
+    // {
+    //     return $this->createRequest('\Omnipay\Billplz\Message\CompleteAuthorizeRequest', $parameters);
+    // }
+    public function getCollectionId()
     {
-        return $this->createRequest('\Omnipay\Billplz\Message\CompleteAuthorizeRequest', $parameters);
+        return $this->getParameter('collectionId');
+    }
+
+    public function setCollectionId($value)
+    {
+        return $this->setParameter('collectionId', $value);
     }
 
     public function getAPIKey()

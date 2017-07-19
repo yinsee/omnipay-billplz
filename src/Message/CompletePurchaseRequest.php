@@ -7,17 +7,21 @@ namespace Omnipay\Billplz\Message;
  */
 class CompletePurchaseRequest extends AbstractRequest
 {
-    public function sendData($data)
+
+    protected function createResponse($data, $statusCode)
     {
-        return $this->response = new CompletePurchaseResponse($this, $data);
+        return $this->response = new CompletePurchaseResponse($this, $data, $statusCode);
     }
 
-    public function getData()
-    {
-        if (strtolower($this->httpRequest->request->get('x_MD5_Hash')) !== $this->getHash()) {
-            throw new InvalidRequestException('Incorrect hash');
-        }
+    public function getHttpMethod() {
+        return 'GET';
+    }
 
-        return $this->httpRequest->request->all();
+    public function getAPI() {
+        return 'bills/'.$this->getId();
+    }
+
+    public function getData() {
+        return [];
     }
 }
