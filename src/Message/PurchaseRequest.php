@@ -30,7 +30,7 @@ class PurchaseRequest extends AbstractRequest
         $data['name'] = $this->getParameter('name');
         $data['amount'] = intval($this->getParameter('amount')*100);
         $data['callback_url'] = $this->getParameter('notifyUrl');
-
+        $data['redirect_url'] = $this->getParameter('returnUrl');
         return $data;
     }
 
