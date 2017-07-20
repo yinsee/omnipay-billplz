@@ -11,16 +11,7 @@ use Omnipay\Common\Message\RedirectResponseInterface;
  */
 class PurchaseResponse extends AbstractResponse implements RedirectResponseInterface
 {
-    // /**
-  //  * endpoint is the remote url - should be provided by the processor.
-  //  * we are using github as a filler
-  //  *
-  //  * @var string
-  //  */
-  //   public $endpoint = 'https://github.com';
-  //
-  //
-  protected $statusCode;
+    protected $statusCode;
 
     public function __construct($request, $data, $statusCode = 200)
     {
