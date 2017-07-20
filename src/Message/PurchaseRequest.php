@@ -7,21 +7,23 @@ namespace Omnipay\Billplz\Message;
  */
 class PurchaseRequest extends AbstractRequest
 {
-
     protected function createResponse($data, $statusCode)
     {
         return $this->response = new PurchaseResponse($this, $data, $statusCode);
     }
 
-    public function getHttpMethod() {
+    public function getHttpMethod()
+    {
         return 'POST';
     }
 
-    public function getAPI() {
+    public function getAPI()
+    {
         return 'bills';
     }
 
-    public function getData() {
+    public function getData()
+    {
         $data = [];
 
         $data['collection_id'] = $this->getParameter('collectionId');
@@ -33,5 +35,4 @@ class PurchaseRequest extends AbstractRequest
         $data['redirect_url'] = $this->getParameter('returnUrl');
         return $data;
     }
-
 }

@@ -7,21 +7,23 @@ namespace Omnipay\Billplz\Message;
  */
 class CompletePurchaseRequest extends AbstractRequest
 {
-
     protected function createResponse($data, $statusCode)
     {
         return $this->response = new CompletePurchaseResponse($this, $data, $statusCode);
     }
 
-    public function getHttpMethod() {
+    public function getHttpMethod()
+    {
         return 'GET';
     }
 
-    public function getAPI() {
+    public function getAPI()
+    {
         return 'bills/'.$this->getId();
     }
 
-    public function getData() {
+    public function getData()
+    {
         return [];
     }
 }

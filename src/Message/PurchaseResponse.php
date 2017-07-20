@@ -11,7 +11,7 @@ use Omnipay\Common\Message\RedirectResponseInterface;
  */
 class PurchaseResponse extends AbstractResponse implements RedirectResponseInterface
 {
-  // /**
+    // /**
   //  * endpoint is the remote url - should be provided by the processor.
   //  * we are using github as a filler
   //  *
@@ -22,11 +22,11 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
   //
   protected $statusCode;
 
-  public function __construct($request, $data, $statusCode = 200)
-  {
-      parent::__construct($request, $data);
-      $this->statusCode = $statusCode;
-  }
+    public function __construct($request, $data, $statusCode = 200)
+    {
+        parent::__construct($request, $data);
+        $this->statusCode = $statusCode;
+    }
 
     /**
      * Has the call to the processor succeeded?

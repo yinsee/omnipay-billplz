@@ -14,7 +14,8 @@ class CompletePurchaseResponse extends AbstractResponse
         $this->statusCode = $statusCode;
     }
 
-    public function isSuccessful() {
+    public function isSuccessful()
+    {
         return (isset($this->data['state']) && $this->data['state'] == 'paid');
     }
 }

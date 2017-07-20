@@ -14,7 +14,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     private function getEndpoint()
     {
-        $base = 'https://'.$this->getAPIKey().':@'.($this->getTestMode() ? $this->testEndpoint : $this->liveEndpoint) . $this->getAPI();
+        $url = ($this->getTestMode() ? $this->testEndpoint : $this->liveEndpoint);
+        $base = 'https://'.$this->getAPIKey().':@'. $url . $this->getAPI();
         return $base;
     }
 
@@ -86,7 +87,8 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return str_replace('\\/', '/', json_encode($data, $options));
     }
 
-    public function getToken() {
+    public function getToken()
+    {
         return base64_encode($this->getAPIKey().":");
     }
     // essenstial parameters
@@ -139,5 +141,4 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     {
         return $this->setParameter('id', $value);
     }
-
 }

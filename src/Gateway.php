@@ -1,11 +1,8 @@
 <?php
-namespace Omnipay\Billplz; //Make sure you update the namespace to reflect your plugin
+namespace Omnipay\Billplz;
 
 use Omnipay\Common\AbstractGateway;
 
-/**
- * Sample Gateway using a redirect method
- */
 class Gateway extends AbstractGateway
 {
 
@@ -99,5 +96,4 @@ class Gateway extends AbstractGateway
     {
         return $this->setParameter('apikey', $value);
     }
-
 }
