@@ -1,4 +1,5 @@
 # Omnipay: Billplz
+[![Build Status](https://travis-ci.org/yinsee/omnipay-billplz.svg?branch=master)](https://travis-ci.org/yinsee/omnipay-billplz)
 
 **(Unofficial) Billplz driver for the Omnipay PHP payment processing library**
 
