@@ -3,6 +3,8 @@
 namespace Omnipay\Billplz\Message;
 
 use Omnipay\Common\Exception\InvalidRequestException;
+use Omnipay\Common\Exception\InvalidResponseException;
+use GuzzleHttp\Middleware;
 
 /**
  * Abstract Request
@@ -22,35 +24,45 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     public function sendData($data)
     {
         // don't throw exceptions for 4xx errors
-        $this->httpClient->getEventDispatcher()->addListener(
+        /*$this->httpClient->getEventDispatcher()->addListener(
             'request.error',
             function ($event) {
                 if ($event['response']->isClientError()) {
                     $event->stopPropagation();
                 }
             }
-        );
+        );*/
+
+        try {
 
         // Guzzle HTTP Client createRequest does funny things when a GET request
         // has attached data, so don't send the data if the method is GET.
         if ($this->getHttpMethod() == 'GET') {
-            $httpRequest = $this->httpClient->createRequest(
+            $httpResponse = $this->httpClient->request(
                 $this->getHttpMethod(),
                 $this->getEndpoint() . '?' . http_build_query($data),
                 array(
                     'Accept' => 'application/json',
                     'Authorization' => 'Basic ' . $this->getToken(),
                     'Content-type' => 'application/json',
+                    'curl.options' => array(
+                        CURLOPT_SSLVERSION => 6
+                    ),
+                    'http_errors' => false
                 )
             );
         } else {
-            $httpRequest = $this->httpClient->createRequest(
+            $httpResponse = $this->httpClient->request(
                 $this->getHttpMethod(),
                 $this->getEndpoint(),
                 array(
                     'Accept' => 'application/json',
                     'Authorization' => 'Basic ' . $this->getToken(),
                     'Content-type' => 'application/json',
+                    'curl.options' => array(
+                        CURLOPT_SSLVERSION => 6
+                    ),
+                    'http_errors' => false
                 ),
                 $this->toJSON($data)
             );
@@ -61,12 +73,12 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         // logging engine is being used.
         // echo "Data == " . json_encode($data) . "\n";
 
-        try {
-            $httpRequest->getCurlOptions()->set(CURLOPT_SSLVERSION, 6); // CURL_SSLVERSION_TLSv1_2 for libcurl < 7.35
-            $httpResponse = $httpRequest->send();
+        
+            //$httpRequest->getOptions()->set(CURLOPT_SSLVERSION, 6); // CURL_SSLVERSION_TLSv1_2 for libcurl < 7.35
+            //$httpResponse = $httpRequest->send();
             // Empty response body should be parsed also as and empty array
             $body = $httpResponse->getBody(true);
-            $jsonToArrayResponse = !empty($body) ? $httpResponse->json() : array();
+            $jsonToArrayResponse = !empty($body) ? json_decode($body, true) : array();
             return $this->response = $this->createResponse($jsonToArrayResponse, $httpResponse->getStatusCode());
         } catch (\Exception $e) {
             throw new InvalidResponseException(
