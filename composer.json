@@ -23,7 +23,7 @@
         "psr-4": { "Omnipay\\Billplz\\" : "src/" }
     },
     "require": {
+        "omnipay/common":  "^3.0.0",
+        "php-http/guzzle6-adapter": "^1.1"
     },
-    "require-dev": {
-    }
 }
