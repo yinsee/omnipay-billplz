@@ -12,7 +12,7 @@ use GuzzleHttp\Middleware;
 abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 {
     private $liveEndpoint = "www.billplz.com/api/v3/";
-    private $testEndpoint = "billplz-staging.herokuapp.com/api/v3/";
+    private $testEndpoint = "www.billplz-sandbox.com/api/v3/";
 
     private function getEndpoint()
     {

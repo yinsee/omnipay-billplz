@@ -16,7 +16,7 @@ to your `composer.json` file:
 
 ```json
     "require": {
-        "yinsee/omnipay-billplz": "dev-master"
+        "yinsee/omnipay-billplz": "^3.0"
     }
 ```
 
