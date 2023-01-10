@@ -20,13 +20,12 @@
         }
     ],
     "autoload": {
-        "psr-4": { "Omnipay\\Billplz\\" : "src/" }
+        "psr-4": {
+            "Omnipay\\Billplz\\": "src/"
+        }
     },
     "require": {
-        "omnipay/common": "^3",
-        "php-http/guzzle6-adapter": "^2"
-    },
-    "require-dev": {
-        "omnipay/tests": "^3"
+        "omnipay/common": "v3.2.0",
+        "php-http/guzzle6-adapter": "v2.0.2"
     }
 }
