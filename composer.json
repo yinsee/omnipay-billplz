@@ -26,6 +26,6 @@
     },
     "require": {
         "omnipay/common": "v3.2.0",
-        "php-http/guzzle6-adapter": "v2.0.2"
+        "php-http/guzzle7-adapter": "1.0.0"
     }
 }
